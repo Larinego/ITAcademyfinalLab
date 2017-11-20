@@ -1,0 +1,40 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:spring="http://www.springframework.org/tags"
+          version="2.0">
+    <spring:message code="orders.order.date" var="orderDate"/>
+    <spring:message code="orders.order.total" var="orderTotal"/>
+    <spring:message code="orders.order.item.product" var="orderItemProduct"/>
+    <spring:message code="orders.order.item.quantity" var="orderItemQuantity"/>
+    <spring:message code="orders.order.item.price" var="orderItemPrice"/>
+
+    <c:forEach var="userOrder" items="${userOrders}" varStatus="userOrderStatus">
+        <div class="container">
+            <h3>${orderDate}: ${userOrder.date}</h3>
+            <h3>${orderTotal}: ${userOrder.total}</h3>
+
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>${orderItemProduct}</th>
+                    <th>${orderItemQuantity}</th>
+                    <th>${orderItemPrice}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach var="userOrderItem" items="${userOrder.getItems()}" varStatus="userOrderItemStatus">
+                    <tr>
+                        <td>${userOrderItem.product}</td>
+                        <td>${userOrderItem.quantity}</td>
+                        <td>${userOrderItem.selledPrice}</td>
+                    </tr>
+                </c:forEach>
+
+                </tbody>
+            </table>
+        </div>
+    </c:forEach>
+
+</jsp:root>

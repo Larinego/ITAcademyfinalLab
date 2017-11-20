@@ -1,0 +1,52 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:spring="http://www.springframework.org/tags"
+          xmlns:security="http://www.springframework.org/security/tags"
+          version="2.0">
+
+    <c:set var="context" value="${pageContext.request.contextPath}"></c:set>
+    <spring:message code="secondDomain" var="secondDomain"/>
+    <spring:message code="navigation.products" var="productsNavigation"/>
+    <spring:message code="navigation.orders" var="ordersNavigation"/>
+    <spring:message code="navigation.en" var="enNavigation"/>
+    <spring:message code="navigation.ru" var="ruNavigation"/>
+    <spring:message code="navigation.enter" var="loginNavigation"/>
+    <spring:message code="navigation.out" var="logoutNavigation"/>
+    <spring:message code="navigation.register" var="registerNavigation"/>
+
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="${context}/${secondDomain}/products">Final lab</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="${context}/${secondDomain}/products">${productsNavigation}</a></li>
+                    <li><a href="${context}/${secondDomain}/orders">${ordersNavigation}</a></li>
+
+                    <c:set var="fullUrlBefore" value="${requestScope['javax.servlet.forward.request_uri']}"></c:set>
+                    <c:set var="oldSecondDomain" value="/${secondDomain}/"></c:set>
+
+                    <li><a href="${fn:replace(fullUrlBefore,oldSecondDomain,'/en/')}">${enNavigation}</a></li>
+                    <li><a href="${fn:replace(fullUrlBefore,oldSecondDomain,'/ru/')}">${ruNavigation}</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <security:authorize access="isAnonymous()">
+                        <li><a href="${context}/loginto"><span
+                                class="glyphicon glyphicon-log-in"></span>  ${loginNavigation}</a></li>
+                        <li><a href="${context}/register"><span
+                                class="glyphicon glyphicon glyphicon-user"></span>  ${registerNavigation}</a></li>
+                    </security:authorize>
+                    <security:authorize access="isAuthenticated()">
+                        <li><a href="#"><span class="glyphicon glyphicon-ok-circle"></span>Hi, <security:authentication property="principal.username"/></a></li>
+                        <li><a href="${context}/logout"><span
+                                class="glyphicon glyphicon-log-out"></span>  ${logoutNavigation}</a></li>
+
+                    </security:authorize>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</jsp:root>

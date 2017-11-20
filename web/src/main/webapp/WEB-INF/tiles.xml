@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+    <definition name="default" template="/WEB-INF/view/layouts/default.jspx">
+        <put-attribute name="title" value="main.title"/>
+        <put-attribute name="header" value="/WEB-INF/view/common/header.jspx"/>
+        <put-attribute name="mainNavigation" value="/WEB-INF/view/common/mainNavigation.jspx"/>
+        <put-attribute name="body" value=""/>
+        <put-attribute name="footer" value="/WEB-INF/view/common/footer.jspx"/>
+    </definition>
+
+    <definition name="locale/products" extends="default">
+        <put-attribute name="title" value="products.title"/>
+        <put-attribute name="body" value="/WEB-INF/view/products/main.jsp"/>
+    </definition>
+
+    <definition name="loginto" extends="default">
+        <put-attribute name="title" value="products.title"/>
+        <put-attribute name="body" value="/WEB-INF/view/login.jsp"/>
+    </definition>
+
+    <definition name="locale/users/userId" extends="default">
+        <put-attribute name="title" value="products.title"/>
+        <put-attribute name="body" value="/WEB-INF/view/users/user/main.jspx"/>
+    </definition>
+
+    <definition name="register" extends="default">
+        <put-attribute name="title" value="products.title"/>
+        <put-attribute name="body" value="/WEB-INF/view/register/main.jspx"/>
+    </definition>
+
+    <definition name="locale/orders" extends="default">
+        <put-attribute name="title" value="products.title"/>
+        <put-attribute name="body" value="/WEB-INF/view/orders/main.jspx"/>
+    </definition>
+
+
+
+</tiles-definitions>
+

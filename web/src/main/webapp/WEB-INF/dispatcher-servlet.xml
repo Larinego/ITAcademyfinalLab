@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                           http://www.springframework.org/schema/security
+                           http://www.springframework.org/schema/security/spring-security-4.2.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+
+    <import resource="classpath*:beans-services.xml"/>
+    <mvc:resources mapping="/resources/**" location="assests"/>
+    <mvc:default-servlet-handler/>
+    <mvc:annotation-driven>
+        <mvc:argument-resolvers>
+            <ref bean="sortResolver"/>
+            <ref bean="pageableResolver" />
+        </mvc:argument-resolvers>
+    </mvc:annotation-driven>
+
+    <bean id="sortResolver" class="org.springframework.data.web.SortHandlerMethodArgumentResolver" />
+    <bean id="pageableResolver" class="org.springframework.data.web.PageableHandlerMethodArgumentResolver">
+        <constructor-arg ref="sortResolver" />
+    </bean>
+
+    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean" />
+
+    <bean class="org.springframework.data.repository.support.DomainClassConverter">
+        <constructor-arg ref="conversionService" />
+    </bean>
+
+    <context:component-scan base-package="com.larinego.web.controllers"/>
+
+    <bean id="tilesConfigurer"
+          class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+        <property name="definitions">
+            <value>/WEB-INF/tiles.xml</value>
+        </property>
+    </bean>
+
+    <bean id="tilesViewResolver"
+          class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView"/>
+    </bean>
+
+    <bean id="messageSource"
+          class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basename" value="classpath:messages"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+
+    <bean id="localeResolver"
+          class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+        <property name="defaultLocale" value="en"/>
+        <property name="cookieName" value="LocaleCookie"></property>
+        <property name="cookieMaxAge" value="3600"></property>
+    </bean>
+
+
+    <security:http  auto-config="true">
+        <security:intercept-url pattern="/" access="permitAll()"/>
+        <security:intercept-url pattern="/en/products" access="permitAll()"/>
+        <security:intercept-url pattern="/ru/products" access="permitAll()"/>
+        <security:intercept-url pattern="/en/products/**" access="permitAll()"/>
+        <security:intercept-url pattern="/ru/products/**" access="permitAll()"/>
+        <security:intercept-url pattern="/en/users" method="GET"  access="hasRole('ROLE_ADMIN')"/>
+        <security:intercept-url pattern="/ru/users" method="GET" access="hasRole('ROLE_ADMIN')"/>
+        <security:intercept-url pattern="/en/users" method="POST"  access="permitAll()"/>
+        <security:intercept-url pattern="/ru/users" method="POST" access="permitAll()"/>
+        <security:intercept-url pattern="/en/users/**" method="GET"  access="hasAnyRole('ROLE_ADMIN,ROLE_USER')"/>
+        <security:intercept-url pattern="/en/users/**" method="GET"  access="hasAnyRole('ROLE_ADMIN,ROLE_USER')"/>
+        <security:intercept-url pattern="/en/users/**" method="PUT"  access="hasAnyRole('ROLE_ADMIN,ROLE_USER')"/>
+        <security:intercept-url pattern="/en/users/**" method="PUT"  access="hasAnyRole('ROLE_ADMIN,ROLE_USER')"/>
+
+        <security:form-login login-page="/login" authentication-failure-url="/loginto?loginFailure" default-target-url="/en/products"
+                             username-parameter="username" password-parameter="password"/>
+        <security:logout delete-cookies="true" invalidate-session="true" logout-success-url="/loginto" />
+        <security:csrf disabled="true"/>
+
+
+    </security:http>
+
+
+    <security:authentication-manager>
+        <security:authentication-provider user-service-ref="authService"/>
+    </security:authentication-manager>
+
+    <bean id="authService" class="com.larinego.services.AuthenticationService"/>
+
+    <bean id="basket" class="com.larinego.services.utils.BasketVO" scope="session">
+        <aop:scoped-proxy/>
+    </bean>
+
+</beans>
